@@ -49,33 +49,27 @@ model.add(Lambda(lambda x: (x / 255.0) - 0.5, input_shape=(160,320,3)))
 
 Data augmentation is used to expand the training set and help the model to generalize better. In this way, we'll have more data to use for training the network and this data is more comprehensive.
 
-# Recovery laps
-If your training data is all focused on driving down the middle of the road, your model won’t ever learn what to do if it gets off to the side of the road. And probably when you run your model to predict steering measurements, things won’t go perfectly and the car will wander off to the side of the road at some point.
 
-So you need to teach the car what to do when it’s off on the side of the road.
-
-One approach might be to constantly wander off to the side of the road and then steer back to the middle.
-
-A better approach is to only record data when the car is driving from the side of the road back toward the center line.
 
 # Mean Squared Error
-Since this model outputs a single continuous numeric value, one appropriate error metric would be mean squared error. If the mean squared error is high on both a training and validation set, the model is underfitting. If the mean squared error is low on a training set but high on a validation set, the model is overfitting. Collecting more data can help improve a model when the model is overfitting. 
+Since this model outputs a single continuous numeric value (which is the predicted steering angle), one appropriate error metric would be the **MSE - Mean Squared Error**. The parameters I took in consideration when analyzing the model's performance were:
+
+* If the mean squared error is high on both a training and validation set, the model is underfitting. 
+* If the mean squared error is low on a training set but high on a validation set, the model is overfitting.
 
 
-
-
-# **Behavioral Cloning** 
+# Behavioral Cloning
 ---
 
 **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
 
-* Use the Udacity simulator to collect data of good driving behavior
-* Build a convolution neural network in Keras that predicts steering angles from images
-* Train and validate the model with a training and validation set
-* Test that the model successfully drives around track one without leaving the road
-* Summarize the results with a written report
+* Use the [Udacity Self Driving Car Simulator](https://github.com/udacity/self-driving-car-sim) to collect data of good driving behavior;
+* Build a convolution neural network in Keras that predicts steering angles from images;
+* Train and validate the model with a training and validation set;
+* Test that the model successfully drives around track one without leaving the road;
+* Summarize the results with a written report.
 
 
 [//]: # (Image References)
@@ -115,9 +109,16 @@ The model.py file contains the code for training and saving the convolution neur
 
 ### Model Architecture and Training Strategy
 
-#### 1. An appropriate model architecture has been employed
+Once I started recording my driving data, to get a good amount of data, at first I decided to perform about 3 complete laps on the racing track.
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+But, for me to get a balanced data, I found that must then perform 3 laps on the oposite direction, becaus on the first lap, we'll be basically driving streering left, which can cause some problems later on, when defining the biases, so the model may predict only left turns. (another way to prevent this, is by fliping the images, which will be done when we tune our data). Basically, the main parameter we need to predict in this project is the steering angle, so the car can know where to turn on each curve and will be able to drive by itslef!
+
+Because the goal of this model is to predict the steering angle based on images, we can say that it is a regression type model and a popular model used for behavioural cloning is called the **Nvidia Model** (more information [here](https://drive.google.com/file/d/1g5OCEUGjSYAHu-wbq6muDk8fAyIpVRfG/view?usp=sharing)). For this specific project, I found that this Nvidia Model has proven to be effective for behavioural cloning and is even used on real life self driving cars, turning to be a very nice opportunity for me to first implement it.
+
+The Nvidia Model's architecture is like:
+<center><img src="https://miro.medium.com/max/2504/1*2Z_8DB1ybUmRaHUsyi6bSA.png" width="575" height="500"></center>
+
+<center><a href='https://towardsdatascience.com/deep-learning-for-self-driving-cars-7f198ef4cfa2'>Source</a></center>
 
 The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
 
