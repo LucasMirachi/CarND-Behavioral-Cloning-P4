@@ -238,4 +238,4 @@ The main reason of this error was that, when balancing the data, I used a relati
 
 ![After Balancing Data][gif2]
 
-So, as it is possible to check in full by opening the run1.mp4 file present in this repository, I could finally achieve the goal of programming my first self-driving car using Python and Keras!!
+So, as it is possible to check in full by opening the [run1.mp4](https://github.com/LucasMirachi/CarND-Behavioral-Cloning-P4/blob/master/run1.mp4) file present in this repository, I could finally achieve the goal of programming my first self-driving car using Python and Keras!!
