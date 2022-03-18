@@ -34,7 +34,7 @@ print('total data:', len(df))
 
 ############## BALANCING THE DATA #############
 
-#To flatten or samples and cut off the steering values which sum exceeds 300 and make it more uniform
+#To flatten or samples and cut off the steering values which sum exceeds 600 and make it more uniform
 num_bins = 25
 hist, bins = np.histogram(df['steering'], num_bins)
 center = (bins[:-1] + bins[1:]) * 0.5
@@ -63,17 +63,17 @@ def load_img_steering(datadir,dataframe):
   steering = []
   for i in range(len(df)):
     indexed_data = df.iloc[i]
-    center, left, right = indexed_data[0], indexed_data[1], indexed_data[2] 
+    center, left, right = indexed_data[0], indexed_data[1], indexed_data[2]
     image_path.append(os.path.join(datadir, center.strip()))
     steering.append(float(indexed_data[3]))
   image_paths = np.asarray(image_path)
   steerings = np.asarray(steering)
   return image_paths, steerings
 
-#                                           Track  +  /IMG/  = Track/IMG/        
+#                                           Track  +  /IMG/  = Track/IMG/
 image_paths, steerings = load_img_steering(datadir, df)
 
-#To split our image_paths and steering arrays into train and test 
+#To split our image_paths and steering arrays into train and test
 X_train, X_valid, y_train, y_valid = train_test_split(image_paths,steerings, test_size=0.2)
 #Checking their sizes (test size is 20% of the total and train is 80%)
 print('Training Samples: {}\nValidation Samples: {}'.format(len(X_train), len(X_valid)))
@@ -90,7 +90,7 @@ def img_preprocess(img):
   img = mpimg.imread(img)
   #Because we're working with the NVidea Model, it is required to change our image color-space from RGB to YUV
   img = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
-  #Applying 3x3-Kernel GaussianBlur to smooth the image and reduce noie
+  #Applying 3x3-Kernel GaussianBlur to smooth the image and reduce noise
   img = cv2.GaussianBlur(img, (3,3), 0)
   return img
 
@@ -103,26 +103,26 @@ X_valid = np.array(list(map(img_preprocess, X_valid)))
 def nvidia_model():
 
   model = Sequential()
-     
+
   model.add(Lambda(lambda x: (x / 255) - 0.5 , input_shape = (160, 320,3)))
 
   #Cropping the top 60 pixeld and the bottom 25 pixels from the image
-  model.add(Cropping2D(cropping=((60,25), (0,0)))) 
-    
+  model.add(Cropping2D(cropping=((60,25), (0,0))))
+
   model.add(Conv2D(24, kernel_size=(5,5), strides=(2,2), activation='relu'))
-  
+
   model.add(Conv2D(36, kernel_size=(5,5), strides=(2,2), activation='relu'))
   model.add(Conv2D(48, kernel_size=(5,5), strides=(2,2), activation='relu'))
   model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
   model.add(Conv2D(64, kernel_size=(3,3), activation='relu'))
   model.add(Dropout(0.5))
- 
- 
+
+
   model.add(Flatten())
-    
+
   model.add(Dense(100, activation='relu'))
   #model.add(Dropout(0.5))
- 
+
   model.add(Dense(50, activation='relu'))
   #model.add(Dropout(0.5))
 
@@ -130,11 +130,11 @@ def nvidia_model():
   #model.add(Dropout(0.5))
 
   model.add(Dense(1))
- 
+
   optimizer= keras.optimizers.Adam(lr=1e-3)
   #Because we'll be working with a regression type example, the error metric is going to be the MSE (Mean Squared Error)
   model.compile(loss='mse', optimizer=optimizer)
- 
+
   return model
 
 model = nvidia_model()
@@ -156,4 +156,3 @@ plt.savefig('loss function.png')
 
 
 model.save('model.h5')
-
